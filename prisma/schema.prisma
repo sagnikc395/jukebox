@@ -34,8 +34,8 @@ model Stream {
   upvotes     Upvote[]
   url         String
   title       String
-  smallImg    String
-  bigImg      String
+  smallImg    String     @default("")
+  bigImg      String     @default("")
   extractedId String
   userId      String
   user        User       @relation(fields: [userId], references: [id])

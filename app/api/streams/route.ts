@@ -40,9 +40,14 @@ export async function POST(req: NextRequest) {
     //split after the v keyword to get the actual id
     const extractedId = data.url.split("?v=")[1];
 
-    const [title, thumbnails, ...otherDetails] =
-      await youtubesearchapi.GetVideoDetails(extractedId);
-    console.log(title);
+    const details = await youtubesearchapi.GetVideoDetails(extractedId);
+
+    //thumbnails
+    const thumbnails = details.thumbnail.thumbnails;
+    //sort the thumbnails
+    thumbnails.sort((a: { width: number }, b: { width: number }) =>
+      a.width < b.width ? -1 : 1
+    );
 
     const stream = await prismaClient.stream.create({
       data: {
@@ -50,6 +55,12 @@ export async function POST(req: NextRequest) {
         url: data.url,
         extractedId,
         type: "Youtube", // for now, later need to add Spotify !
+        title: details.title ?? "Cant find video",
+        smallImg:
+          (thumbnails.length > 1
+            ? thumbnails[thumbnails.length - 2]
+            : thumbnails[thumbnails.length - 1]) ?? "",
+        bigImg: thumbnails[thumbnails.lenght - 1] ?? "",
       },
     });
     return NextResponse.json({
