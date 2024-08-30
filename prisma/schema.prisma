@@ -28,12 +28,14 @@ enum StreamType {
 }
 
 model Stream {
-  id      String     @id @default(uuid())
-  type    StreamType
-  active  Boolean    @default(true)
-  upvotes Upvote[]
-  userId  String
-  user    User       @relation(fields: [userId], references: [id])
+  id          String     @id @default(uuid())
+  type        StreamType
+  active      Boolean    @default(true)
+  upvotes     Upvote[]
+  url         String
+  extractedId String
+  userId      String
+  user        User       @relation(fields: [userId], references: [id])
 }
 
 enum Provider {
