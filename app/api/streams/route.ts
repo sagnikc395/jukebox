@@ -55,3 +55,15 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+//get a specific stream
+export async function GET(req: NextRequest) {
+  //get a particular stream from a query parameter
+  const creatorId = req.nextUrl.searchParams.get("creatorId");
+  const streams = await prismaClient.stream.findMany({
+    where: {
+      userId: creatorId ?? "",
+    },
+  });
+  return NextResponse.json({ streams });
+}
