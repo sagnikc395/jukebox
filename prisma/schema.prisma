@@ -36,11 +36,6 @@ model Stream {
   user    User       @relation(fields: [userId], references: [id])
 }
 
-enum Role {
-  EndUser
-  Streamer
-}
-
 enum Provider {
   Google
 }
@@ -51,4 +46,7 @@ model Upvote {
   streamId String
   user     User   @relation(fields: [userId], references: [id])
   stream   Stream @relation(fields: [streamId], references: [id])
+
+  //single user cannot upvote twice on the userid and streamid
+  @@unique([userId, streamId])
 }
