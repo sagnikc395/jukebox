@@ -19,12 +19,30 @@ export async function POST(req: NextRequest) {
   //user will send the id of the creator where they will send the stream
   //using zod to parse the correct data
   try {
-    const data = CreateStreamSchema.safeParse(await req.json());
-    const isYt = data.url.includes("youtube");
+    const data = CreateStreamSchema.parse(await req.json());
+    const isYt = YTRegex.test(data.url);
 
-    prismaClient.stream.create({
-      userId: data.creatorId,
-      url: data.url,
+    if (!isYt) {
+      return NextResponse.json(
+        {
+          message: "Wrong URL Format",
+        },
+        {
+          status: 411,
+        }
+      );
+    }
+
+    //split after the v keyword to get the actual id
+    const extractedId = data.url.split("?v=")[1];
+
+    await prismaClient.stream.create({
+      data: {
+        userId: data.creatorId,
+        url: data.url,
+        extractedId,
+        type: "Youtube", // for now, later need to add Spotify !
+      },
     });
   } catch (e) {
     return NextResponse.json(
