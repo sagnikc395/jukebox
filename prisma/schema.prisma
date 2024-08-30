@@ -18,8 +18,8 @@ model User {
   id       String   @id @default(uuid())
   email    String
   provider Provider
-  role     Role
   streams  Stream[]
+  upvotes  Upvote[]
 }
 
 enum StreamType {
@@ -31,7 +31,7 @@ model Stream {
   id      String     @id @default(uuid())
   type    StreamType
   active  Boolean    @default(true)
-  upvotes Int
+  upvotes Upvote[]
   userId  String
   user    User       @relation(fields: [userId], references: [id])
 }
@@ -43,4 +43,12 @@ enum Role {
 
 enum Provider {
   Google
+}
+
+model Upvote {
+  id       String @id @default(uuid())
+  userId   String
+  streamId String
+  user     User   @relation(fields: [userId], references: [id])
+  stream   Stream @relation(fields: [streamId], references: [id])
 }
