@@ -2,9 +2,13 @@ import { prismaClient } from "@/app/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
-const YTRegex = new RegExp(
-  "^(https?://)?(www.)?(youtube.com|youtu.be)/(watch?v=)?([a-zA-Z0-9_-]{11})"
-);
+//as no types found
+//@ts-ignore
+import youtubesearchapi from "youtube-search-api";
+
+const YTRegex =
+  "/^(?:(?:https?:)?//)?(?:www.)?(?:m.)?(?:youtu(?:be)?.com/(?:v/|embed/|watch(?:/|?v=))|youtu.be/)((?:w|-){11})(?:S+)?$/;";
+
 const SpotifyRegex = new RegExp(
   "^(https://open.spotify.com/(track|album|playlist|artist)/[a-zA-Z0-9]+)(?si=[a-zA-Z0-9]+)?$"
 );
@@ -20,7 +24,7 @@ export async function POST(req: NextRequest) {
   //using zod to parse the correct data
   try {
     const data = CreateStreamSchema.parse(await req.json());
-    const isYt = YTRegex.test(data.url);
+    const isYt = data.url.match(YTRegex);
 
     if (!isYt) {
       return NextResponse.json(
@@ -36,13 +40,21 @@ export async function POST(req: NextRequest) {
     //split after the v keyword to get the actual id
     const extractedId = data.url.split("?v=")[1];
 
-    await prismaClient.stream.create({
+    const [title, thumbnails, ...otherDetails] =
+      await youtubesearchapi.GetVideoDetails(extractedId);
+    console.log(title);
+
+    const stream = await prismaClient.stream.create({
       data: {
         userId: data.creatorId,
         url: data.url,
         extractedId,
         type: "Youtube", // for now, later need to add Spotify !
       },
+    });
+    return NextResponse.json({
+      message: "Added Stream",
+      id: stream.id,
     });
   } catch (e) {
     return NextResponse.json(
