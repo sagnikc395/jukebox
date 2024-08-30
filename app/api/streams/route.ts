@@ -55,6 +55,7 @@ export async function POST(req: NextRequest) {
         url: data.url,
         extractedId,
         type: "Youtube", // for now, later need to add Spotify !
+        //@ts-ignore
         title: details.title ?? "Cant find video",
         smallImg:
           (thumbnails.length > 1
