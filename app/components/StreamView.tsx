@@ -24,6 +24,10 @@ export default function StreamView(
     const videoPlayerRef = useRef<HTMLVideoElement>();
 
 
+    //refresh the current stream 
+    
+
+
     return (
         <div className="flex flex-col min-h-screen bg-[rgb(10,10,10)] text-gray-200">
             <Appbar />
