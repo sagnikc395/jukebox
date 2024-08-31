@@ -2,6 +2,7 @@
 import { signIn, useSession } from "next-auth/react"
 import { signOut } from "next-auth/react";
 
+import { Music } from "lucide-react";
 
 export function Appbar() {
 
