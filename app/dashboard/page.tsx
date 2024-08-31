@@ -1,6 +1,7 @@
 'use client';
 
 import { useSession } from "next-auth/react";
+import useRedirect from "../hooks/useRedirect";
 
 export default function Dashboard() {
     //dashboard only renders when logged in 
