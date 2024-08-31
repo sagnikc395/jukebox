@@ -2,6 +2,7 @@
 import { signIn, useSession } from "next-auth/react"
 import { signOut } from "next-auth/react";
 
+
 export function Appbar() {
 
     //check if user already loggedin
@@ -12,12 +13,8 @@ export function Appbar() {
                 jukebox
             </div>
             <div>
-                {/** user will get redirected to the login page  */}
-                {session.data?.user &&
-                    <button className="m-2 p-2 bg-blue-400" onClick={() => signOut()}>Logout</button>}
-                <button className="m-2 p-2 bg-blue-600" onClick={() => signIn()}>
-                    SignIn
-                </button>
+                {session.data?.user && <Button className="bg-purple-600 text-white hover:bg-purple-700" onClick={() => signOut()}>Logout</Button>}
+                {!session.data?.user && <Button className="bg-purple-600 text-white hover:bg-purple-700" onClick={() => signIn()}>Signin</Button>}
             </div>
         </div>
     </div>
